@@ -1,0 +1,30 @@
+<div class="min-h-screen bg-gray-50 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Audit Logs</h1>
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <ul class="divide-y divide-gray-200">
+                <% logs.forEach(log => { %>
+                    <li class="px-4 py-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900"><%= log.action %></p>
+                                <p class="text-sm text-gray-500">
+                                    Performed by: <%= log.performedBy %>
+                                </p>
+                                <p class="text-sm text-gray-500">
+                                    Target: <%= log.target || 'N/A' %>
+                                </p>
+                                <p class="text-sm text-gray-500">
+                                    Details: <%= log.details %>
+                                </p>
+                            </div>
+                            <div class="text-sm text-gray-500">
+                                <%= new Date(log.timestamp).toLocaleString() %>
+                            </div>
+                        </div>
+                    </li>
+                <% }); %>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+<div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+    <h4 class="text-lg font-medium text-gray-900 mb-4">Add Comment</h4>
+    <form action="/ticket/<%= ticket._id %>/comment" method="POST" class="space-y-4">
+        <div>
+            <label for="comment" class="sr-only">Add comment</label>
+            <textarea id="comment" name="comment" rows="3" required
+                class="shadow-sm block w-full focus:ring-discord focus:border-discord sm:text-sm border border-gray-300 rounded-md"
+                placeholder="Add your comment..."></textarea>
+        </div>
+        <div class="flex justify-end">
+            <button type="submit"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-discord hover:bg-discord-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-discord">
+                Add Comment
+            </button>
+        </div>
+    </form>
+</div>

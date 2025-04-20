@@ -1,0 +1,96 @@
+<!-- filepath: c:\Users\pokem\ticket\ticket-support copy\views\staff\admin_dashboard.ejs -->
+<div class="min-h-screen bg-gray-50 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Admin Dashboard</h1>
+
+        <!-- User Management Section -->
+        <div class="bg-white shadow rounded-lg p-6 mb-8">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">Manage Users</h2>
+            <form action="/staff/assign-role" method="POST" class="space-y-4">
+                <div>
+                    <label for="userId" class="block text-sm font-medium text-gray-700">User</label>
+                    <select name="userId" id="userId" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-discord focus:ring-discord sm:text-sm">
+                        <% users.forEach(user => { %>
+                            <option value="<%= user._id %>"><%= user.username %> (<%= user.roles.join(', ') %>)</option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div>
+                    <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+                    <select name="role" id="role" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-discord focus:ring-discord sm:text-sm">
+                        <option value="User">User</option>
+                        <option value="Staff">Staff</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit"
+                    class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-discord hover:bg-discord-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-discord">
+                    Assign Role
+                </button>
+            </form>
+        </div>
+
+        <!-- Ticket Creation Settings Section -->
+        <div class="bg-white shadow rounded-lg p-6 mb-8">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">Ticket Creation Settings</h2>
+            <form action="/admin/toggle-ticket-creation" method="POST">
+                <div class="flex items-center space-x-4">
+                    <label for="allowTicketCreation" class="text-sm font-medium text-gray-700">Allow Ticket Creation:</label>
+                    <select name="allowTicketCreation" id="allowTicketCreation" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-discord focus:ring-discord sm:text-sm">
+                        <option value="true">Enabled</option>
+                        <option value="false">Disabled</option>
+                    </select>
+                </div>
+                <button type="submit" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-discord hover:bg-discord-dark">
+                    Save Changes
+                </button>
+            </form>
+        </div>
+
+        <!-- Export Tickets Section -->
+        <div class="bg-white shadow rounded-lg p-6 mb-8">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">Export Tickets</h2>
+            <a href="/reports/export-tickets" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-discord hover:bg-discord-dark">
+                Export to CSV
+            </a>
+        </div>
+
+        <!-- Audit Logs Section -->
+        <div class="bg-white shadow rounded-lg p-6 mb-8">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">Audit Logs</h2>
+            <a href="/admin/audit-logs" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-discord hover:bg-discord-dark">
+                View Audit Logs
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('allowTicketCreation').addEventListener('change', async function () {
+        const allowTicketCreation = this.value;
+        try {
+            const response = await fetch('/admin/toggle-ticket-creation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ allowTicketCreation })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            if (result.success) {
+                alert('Ticket creation setting updated successfully!');
+            } else {
+                alert('Failed to update ticket creation setting: ' + result.message);
+            }
+        } catch (error) {
+            alert('An error occurred: ' + error.message);
+        }
+    });
+</script>

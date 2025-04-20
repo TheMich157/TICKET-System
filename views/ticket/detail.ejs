@@ -1,0 +1,287 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto px-4 py-8">
+  <% try { %>
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+      <!-- Ticket Details -->
+      <div class="p-6">
+        <h1 class="text-2xl font-bold mb-4">Ticket #<%= ticket._id %></h1>
+        <div class="min-h-screen bg-gray-50 py-6">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Ticket Header -->
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+                    <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+                        <div>
+                            <h3 class="text-2xl leading-6 font-bold text-gray-900">
+                                Ticket #<%= ticket._id %>
+                            </h3>
+                            <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                                Created on <%= new Date(ticket.createdAt).toLocaleDateString() %>
+                            </p>
+                        </div>
+                        <div class="flex space-x-3">
+                            <% if (ticket.status !== 'closed') { %>
+                                <form action="/ticket/<%= ticket._id %>/close" method="POST" class="inline">
+                                    <button type="submit" 
+                                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                        <i class="fas fa-times-circle mr-2"></i> Close Ticket
+                                    </button>
+                                </form>
+                            <% } %>
+                            <% if (locals.isStaff && !ticket.escalated) { %>
+                                <form action="/ticket/<%= ticket._id %>/escalate" method="POST" class="inline">
+                                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700">
+                                        Escalate Ticket
+                                    </button>
+                                </form>
+                            <% } %>
+                            <% if (locals.isStaff) { %>
+                                <% if (!ticket.assignedTo) { %>
+                                    <form action="/ticket/<%= ticket._id %>/claim" method="POST" class="inline">
+                                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
+                                            Claim Ticket
+                                        </button>
+                                    </form>
+                                <% } else if (ticket.assignedTo && ticket.assignedTo._id.toString() === user._id.toString()) { %>
+                                    <form action="/ticket/<%= ticket._id %>/unclaim" method="POST" class="inline">
+                                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-yellow-600 hover:bg-yellow-700">
+                                            Unclaim Ticket
+                                        </button>
+                                    </form>
+                                <% } %>
+                            <% } %>
+                            <div class="flex space-x-3">
+                                <% if (locals.isStaff) { %>
+                                    <form action="/ticket/<%= ticket._id %>/create-channel" method="POST" class="inline">
+                                        <button type="submit" 
+                                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                            <i class="fas fa-plus-circle mr-2"></i> Create Discord Channel
+                                        </button>
+                                    </form>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ticket Details -->
+                    <div class="border-t border-gray-200">
+                        <!-- Update Ticket Form -->
+                        <%- include('./_update_ticket_form') %>
+
+                        <!-- Ticket Details -->
+                        <div class="px-4 py-5 sm:px-6">
+                            <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">Status</dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                        <%= ticket.status === 'open' ? 'bg-green-100 text-green-800' : 
+                                            ticket.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' : 
+                                            'bg-gray-100 text-gray-800' %>">
+                                        <%= ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1) %>
+                                    </span>
+                                </dd>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">Priority</dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                        <%= ticket.priority === 'high' ? 'bg-red-100 text-red-800' : 
+                                            ticket.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
+                                            'bg-green-100 text-green-800' %>">
+                                        <%= ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1) %>
+                                    </span>
+                                </dd>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">Category</dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    <%= ticket.category.charAt(0).toUpperCase() + ticket.category.slice(1) %>
+                                </dd>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">Assigned To</dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    <%= ticket.assignedTo ? ticket.assignedTo.username : 'Unassigned' %>
+                                </dd>
+                            </div>
+
+                            <div class="sm:col-span-2">
+                                <dt class="text-sm font-medium text-gray-500">Description</dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    <%= ticket.description %>
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+
+                <!-- Updates and Comments Section -->
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div class="px-4 py-5 sm:px-6">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            Updates and Comments
+                        </h3>
+                    </div>
+                    
+                    <!-- Updates List -->
+                    <div class="border-t border-gray-200">
+                        <ul class="divide-y divide-gray-200">
+                            <% if (ticket.updates && ticket.updates.length > 0) { %>
+                                <% ticket.updates.forEach(update => { %>
+                                    <li class="px-4 py-4">
+                                        <div class="flex space-x-3">
+                                            <div class="flex-1">
+                                                <p class="text-sm text-gray-900">
+                                                    <%= update.message %>
+                                                </p>
+                                                <div class="mt-1 text-sm text-gray-500">
+                                                    <span>By <%= update.updatedBy ? update.updatedBy.username : 'System' %></span>
+                                                    <span class="mx-1">•</span>
+                                                    <span><%= new Date(update.updatedAt).toLocaleString() %></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                <% }); %>
+                            <% } else { %>
+                                <li class="px-4 py-4 text-sm text-gray-500 text-center">
+                                    No updates yet
+                                </li>
+                            <% } %>
+                        </ul>
+                    </div>
+
+                    <!-- Staff Notes Section (Only visible to staff) -->
+                    <% if (locals.isStaff) { %>
+                        <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                            <h4 class="text-lg font-medium text-gray-900 mb-4">Staff Notes</h4>
+                            
+                            <!-- Add Note Form -->
+                            <form action="/ticket/<%= ticket._id %>/note" method="POST" class="space-y-4">
+                                <div>
+                                    <label for="note" class="block text-sm font-medium text-gray-700">Add a Note</label>
+                                    <p class="mt-1 text-sm text-gray-500">This note will be visible to all staff members.</p>
+                                </div>
+                                
+                                <div>
+                                    <label for="note" class="sr-only">Add note</label>
+                                    <textarea id="note" name="note" rows="3" required
+                                        class="shadow-sm block w-full focus:ring-discord focus:border-discord sm:text-sm border border-gray-300 rounded-md"
+                                        placeholder="Add a staff note..."></textarea>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button type="submit"
+                                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-discord hover:bg-discord-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-discord">
+                                        Add Note
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- Staff Notes List -->
+                            <div class="mt-6">
+                                <ul class="divide-y divide-gray-200">
+                                    <% if (ticket.staffNotes && ticket.staffNotes.length > 0) { %>
+                                        <% ticket.staffNotes.forEach(note => { %>
+                                            <li class="py-4">
+                                                <div class="flex space-x-3">
+                                                    <div class="flex-1">
+                                                        <p class="text-sm text-gray-900"><%= note.note %></p>
+                                                        <div class="mt-1 text-sm text-gray-500">
+                                                            <span>By <%= note.createdBy ? note.createdBy.username : 'Unknown Staff' %></span>
+                                                            <span class="mx-1">•</span>
+                                                            <span><%= new Date(note.createdAt).toLocaleString() %></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <li class="py-4 text-sm text-gray-500 text-center">
+                                            No staff notes yet
+                                        </li>
+                                    <% } %>
+                                </ul>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- New Staff Assignment Section -->
+                                </button>
+                            </form>
+                            <% if (isStaff || isAdmin) { %>
+                                <form action="/ticket/<%= ticket._id %>/create-channel" method="POST" class="mt-4">
+                                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-discord hover:bg-discord-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-discord">
+                                        Create Ticket Channel
+                                    </button>
+                                </form>
+                            <% } %>
+                        </div>
+                    </div>
+                <% } %>
+
+                <!-- Enhanced Chat Section -->
+                <div id="chat-container" class="mt-6 bg-white shadow rounded-lg">
+                    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">Ticket Chat</h3>
+                    </div>
+                    <div id="chat-messages" class="p-4 h-96 overflow-y-auto bg-gray-50">
+                        <!-- Messages will be dynamically added here -->
+                    </div>
+                    <div class="border-t border-gray-200 px-4 py-4">
+                        <form id="chat-form" class="flex space-x-3">
+                            <input type="text" id="chat-input" placeholder="Type your message..." required
+                                class="flex-1 shadow-sm block w-full focus:ring-discord focus:border-discord sm:text-sm border border-gray-300 rounded-md">
+                            <button type="submit"
+                                class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-discord hover:bg-discord-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-discord">
+                                Send
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <script>
+                    const socket = io();
+                    const ticketId = '<%= ticket._id %>';
+                    const username = '<%= user.username %>';
+                    const role = '<%= user.roles.includes("Admin") ? "Admin" : user.roles.includes("Staff") ? "Staff" : "User" %>';
+                    const userId = '<%= user._id %>';
+
+                    socket.emit('joinTicket', ticketId);
+
+                    const chatMessages = document.getElementById('chat-messages');
+                    const chatForm = document.getElementById('chat-form');
+                    const chatInput = document.getElementById('chat-input');
+
+                    socket.on('receiveMessage', ({ username, role, message }) => {
+                        const messageElement = document.createElement('div');
+                        messageElement.classList.add('mb-4', 'p-3', 'rounded-lg', 'bg-white', 'shadow');
+                        messageElement.innerHTML = `<strong class="text-discord">${username} (${role}):</strong> <span class="text-gray-700">${message}</span>`;
+                        chatMessages.appendChild(messageElement);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    });
+
+                    chatForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        const message = chatInput.value;
+                        socket.emit('sendMessage', { ticketId, message, userId, username, role });
+                        chatInput.value = '';
+                    });
+                </script>
+            </div>
+        </div>
+      </div>
+    </div>
+  <% } catch (e) { %>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+      <p>Error loading ticket details: <%= e.message %></p>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>
+

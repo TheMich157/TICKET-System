@@ -1,0 +1,33 @@
+<div class="min-h-screen bg-gray-50 py-6">
+    <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+        <div class="bg-white shadow sm:rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h2 class="text-2xl font-bold text-gray-900">Assign Roles</h2>
+                <form action="/admin/assign-role" method="POST" class="mt-4 space-y-4">
+                    <div>
+                        <label for="userId" class="block text-sm font-medium text-gray-700">User</label>
+                        <select name="userId" id="userId" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-discord focus:ring-discord sm:text-sm">
+                            <% users.forEach(user => { %>
+                                <option value="<%= user._id %>"><%= user.username %> (<%= user.roles.join(', ') %>)</option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+                        <select name="role" id="role" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-discord focus:ring-discord sm:text-sm">
+                            <option value="User">User</option>
+                            <option value="Staff">Staff</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit"
+                        class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-discord hover:bg-discord-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-discord">
+                        Assign Role
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

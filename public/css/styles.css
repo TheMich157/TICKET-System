@@ -1,0 +1,581 @@
+/* Custom styles on top of Tailwind */
+
+/* Discord theme colors */
+:root {
+  --discord-primary: #7289da;
+  --discord-dark: #5b73c7;
+  --discord-light: #99aab5;
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --card-bg: #f9fafb;
+}
+
+:root.dark {
+  --bg-color: #1a202c;
+  --text-color: #f7fafc;
+  --card-bg: #2d3748;
+}
+
+/* Custom button hover effects */
+.btn-discord:hover {
+  transform: translateY(-1px);
+  transition: all 0.2s;
+}
+
+/* Custom animations */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Add animations for buttons and redirects */
+.button-animate {
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.button-animate:hover {
+  transform: translateY(-3px);
+  background-color: var(--discord-dark);
+}
+
+/* Add fade-in animation for redirects */
+.page-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Custom status badges */
+.status-badge {
+  transition: all 0.2s;
+}
+
+.status-badge:hover {
+  transform: scale(1.05);
+}
+
+/* Custom card hover effects */
+.ticket-card {
+  transition: all 0.2s;
+}
+
+.ticket-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+/* Dashboard Cards */
+.card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  background-color: var(--card-bg);
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom form styles */
+.form-input:focus {
+  border-color: var(--discord-primary);
+  box-shadow: 0 0 0 3px rgba(114, 137, 218, 0.2);
+}
+
+/* Custom loading spinner */
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-block-start: 3px solid var(--discord-primary);
+  border-radius: 50%;
+  inline-size: 24px;
+  block-size: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Toast notifications */
+.toast {
+  position: fixed;
+  inset-block-end: 1rem;
+  inset-inline-end: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  opacity: 0;
+  transform: translateY(1rem);
+  animation: slideIn 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  inline-size: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--discord-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--discord-primary);
+}
+
+@keyframes fadeInBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fadeInBounce {
+  animation: fadeInBounce 0.8s ease-out;
+}
+
+/* Custom tooltip styles */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+.tooltip .tooltiptext {
+  visibility: hidden;
+  inline-size: 120px;
+  background-color: var(--discord-primary);
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  inset-block-end: 125%; /* Position above the tooltip */
+  inset-inline-start: 50%;
+  margin-inline-start: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+/* Custom modal styles */
+.modal {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(-50px);
+  transition: all 0.3s ease;
+}
+.modal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-header h2 {
+  margin: 0;
+}
+.modal-header .close {
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+.modal-body {
+  margin-block-start: 10px;
+}
+.modal-footer {
+  margin-block-start: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+.modal-footer .btn {
+  margin-inline-start: 10px;
+} 
+.modal-footer .btn-primary {
+  background-color: var(--discord-primary);
+  color: white;
+}
+.modal-footer .btn-secondary {
+  background-color: #ccc;
+  color: black;
+}
+/* Custom dropdown styles */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-inline-size: 160px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover {
+  background-color: var(--discord-primary);
+  color: white;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+/* Custom badge styles */
+.badge {
+  display: inline-block;
+  padding: 0.5em 1em;
+  border-radius: 1em;
+  background-color: var(--discord-primary);
+  color: white;
+  font-size: 0.875rem;
+}
+.badge-success {
+  background-color: #28a745;
+}
+.badge-danger {
+  background-color: #dc3545;
+}
+.badge-warning {
+  background-color: #ffc107;
+}
+.badge-info {
+  background-color: #17a2b8;
+}
+.badge-light {
+  background-color: #f8f9fa;
+  color: black;
+}
+.badge-dark {
+  background-color: #343a40;
+  color: white;
+}
+/* Custom table styles */
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+.table th, .table td {
+  padding: 12px;
+  text-align: start;
+  border-block-end: 1px solid #ddd;
+}
+.table th {
+  background-color: var(--discord-primary);
+  color: white;
+}
+.table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Leaderboard */
+.leaderboard-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-block-end: 1px solid #e5e7eb;
+}
+.leaderboard-item:last-child {
+  border-block-end: none;
+}
+
+/* Custom pagination styles */
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.pagination li {
+  margin: 0 5px;
+}
+.pagination li a {
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: var(--discord-primary);
+  color: white;
+}
+.pagination li a:hover {
+  background-color: var(--discord-dark);
+}
+.pagination li.active a {
+  background-color: var(--discord-dark);
+  color: white;
+}
+
+/* TOS Button Styling */
+.tos-button {
+    font-size: 0.875rem;
+    color: #6b7280; /* Gray-500 */
+    transition: color 0.2s ease-in-out;
+}
+
+.tos-button:hover {
+    color: #374151; /* Gray-700 */
+}
+
+/* Improved templates */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+h1, h2 {
+    color: #111827;
+}
+
+a {
+    color: #5865F2;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.bg-gray-50 {
+    background-color: #f9fafb;
+}
+
+.bg-white {
+    background-color: #ffffff;
+}
+
+.text-discord {
+    color: #7289da;
+}
+
+.text-discord:hover {
+    color: #5865F2;
+}
+
+/* Logo styling */
+img.h-16.w-16 {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Avatar styling */
+img.h-10.w-10 {
+    transition: transform 0.2s ease-in-out;
+}
+img.h-10.w-10:hover {
+    transform: scale(1.1);
+}
+
+/* Dark mode styles */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --card-bg: #f9fafb;
+}
+
+:root.dark {
+    --bg-color: #1a202c;
+    --text-color: #f7fafc;
+    --card-bg: #2d3748;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.card {
+    background-color: var(--card-bg);
+}
+
+/* Fix dark mode toggle and add consistent button styles */
+
+/* Button styles */
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background-color: var(--discord-primary);
+  border: none;
+  border-radius: 0; /* No corners */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button:hover {
+  background-color: var(--discord-dark);
+  transform: translateY(-2px);
+}
+
+/* Dark mode adjustments */
+:root.dark .button {
+  background-color: #4a5568; /* Darker shade for dark mode */
+}
+
+:root.dark .button:hover {
+  background-color: #2d3748;
+}
+.button-box-small {
+  padding: 4px 10px;
+  font-size: 14px;
+  line-height: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  block-size: 2.5rem; /* consistent height */
+}
+.button-box-small:hover {
+  background-color: var(--discord-dark);
+  transform: translateY(-2px);
+}
+.button-box-small:active {
+  transform: translateY(0);
+}
+.button-box-small:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(114, 137, 218, 0.5);
+}
+
+/* Custom styles for the ticket system */
+.ticket-card {
+  background-color: var(--card-bg);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.ticket-card:hover {
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+.ticket-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ticket-card-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.ticket-card-header .status {
+  font-size: 0.875rem;
+  color: var(--discord-primary);
+}
+.ticket-card-body {
+  margin-block-start: 1rem;
+}
+.ticket-card-body p {
+  margin: 0;
+  font-size: 1rem;
+}
+.ticket-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-block-start: 1rem;
+}
+.ticket-card-footer .btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  background-color: var(--discord-primary);
+  color: white;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.ticket-card-footer .btn:hover {
+  background-color: var(--discord-dark);
+  transform: translateY(-2px);
+}
+.ticket-card-footer .btn:active {
+  transform: translateY(0);
+}
+.ticket-card-footer .btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(114, 137, 218, 0.5);
+}
+.ticket-card-footer .btn-secondary {
+  background-color: #ccc;
+  color: black;
+}
+.ticket-card-footer .btn-secondary:hover {
+  background-color: #bbb;
+}
+.ticket-card-footer .btn-secondary:active {
+  transform: translateY(0);
+}
+.ticket-card-footer .btn-secondary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(114, 137, 218, 0.5);
+}
+.ticket-card-footer .btn-secondary:disabled {
+  background-color: #e2e8f0;
+  color: #a0aec0;
+  cursor: not-allowed;
+}
+.ticket-card-footer .btn-secondary:disabled:hover {
+  background-color: #e2e8f0;
+  transform: none;
+}
+.ticket-card-footer .btn-secondary:disabled:active {
+  transform: none;
+}
+.ticket-card-footer .btn-secondary:disabled:focus {
+  outline: none;
+  box-shadow: none;
+}
+.ticket-card-footer .btn-secondary:disabled:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+

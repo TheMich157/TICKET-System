@@ -1,0 +1,46 @@
+<% if (locals.isStaff) { %>
+<div class="bg-white shadow sm:rounded-lg mb-6">
+    <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+            Update Ticket Details
+        </h3>
+        <div class="mt-2 max-w-xl text-sm text-gray-500">
+            <p>Update the priority or category of this ticket.</p>
+        </div>
+        <form action="/staff/ticket/<%= ticket._id %>/update" method="POST" class="mt-5">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <!-- Priority -->
+                <div>
+                    <label for="priority" class="block text-sm font-medium text-gray-700">Priority</label>
+                    <select id="priority" name="priority"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-discord focus:ring-discord sm:text-sm">
+                        <option value="low" <%= ticket.priority === 'low' ? 'selected' : '' %>>Low</option>
+                        <option value="medium" <%= ticket.priority === 'medium' ? 'selected' : '' %>>Medium</option>
+                        <option value="high" <%= ticket.priority === 'high' ? 'selected' : '' %>>High</option>
+                    </select>
+                </div>
+
+                <!-- Category -->
+                <div>
+                    <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                    <select id="category" name="category"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-discord focus:ring-discord sm:text-sm">
+                        <option value="technical" <%= ticket.category === 'technical' ? 'selected' : '' %>>Technical</option>
+                        <option value="billing" <%= ticket.category === 'billing' ? 'selected' : '' %>>Billing</option>
+                        <option value="general" <%= ticket.category === 'general' ? 'selected' : '' %>>General</option>
+                        <option value="feature-request" <%= ticket.category === 'feature-request' ? 'selected' : '' %>>Feature Request</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <button type="submit"
+                    class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-discord hover:bg-discord-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-discord">
+                    <i class="fas fa-save mr-2"></i>
+                    Update Ticket
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<% } %>

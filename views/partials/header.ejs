@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'Support Ticket System' %></title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            'discord': '#7289da',
+            'discord-dark': '#5865F2',
+          }
+        }
+      }
+    };
+  </script>
+
+  <script>
+    function toggleDarkMode() {
+      const html = document.documentElement;
+      html.classList.toggle('dark');
+      localStorage.setItem('darkMode', html.classList.contains('dark'));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.documentElement.classList.add('dark');
+      }
+    });
+  </script>
+
+  <style>
+    .button-box {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      color: white;
+      background-color: #7289da;
+      border-radius: 5px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .button-box:hover {
+      background-color: #5865F2;
+      transform: translateY(-2px);
+    }
+
+    .button-box-small {
+      padding: 4px 10px;
+      font-size: 14px;
+      block-size: 2.5rem;
+    }
+
+    .bg-discord-gradient {
+      background: linear-gradient(45deg, #7289da, #5865F2);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gray-50 font-sans">
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <!-- Left section: Logo + Links -->
+        <div class="flex items-center space-x-4">
+          <a href="/" class="text-2xl font-bold text-gray-800 flex items-center gap-x-2">
+            <i class="fas fa-ticket-alt text-discord"></i> Support
+          </a>
+
+          <div class="hidden sm:flex items-center gap-x-2">
+            <a href="/" class="button-box button-box-small">Home</a>
+            <% if (locals.isAuthenticated) { %>
+              <a href="/dashboard" class="button-box button-box-small">Dashboard</a>
+              <% if (locals.isStaff) { %>
+                <a href="/staff/dashboard" class="button-box button-box-small">Staff Panel</a>
+              <% } %>
+            <% } %>
+            <% if (locals.isAdmin) { %>
+              <a href="/staff/admin-dashboard" class="button-box button-box-small">Admin Panel</a>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Right section: User Info -->
+        <div class="hidden sm:flex items-center gap-x-3">
+          <% if (locals.isAuthenticated && locals.user) { %>
+            <div class="flex items-center gap-x-2">
+              <img class="h-8 w-8 rounded-full"
+                src="<%= user.avatar ? `https://cdn.discordapp.com/avatars/${user.discordId}/${user.avatar}.png` : '/images/default-avatar.png' %>"
+                alt="Profile">
+              <span class="text-gray-700 font-medium"><%= user.username %></span>
+            </div>
+            <a href="/auth/logout" class="button-box button-box-small">
+              <i class="fas fa-sign-out-alt mr-1"></i> Logout
+            </a>
+            <button onclick="toggleDarkMode()" class="button-box button-box-small">Toggle Dark Mode</button>
+          <% } else { %>
+            <a href="/auth/discord" class="button-box button-box-small">
+              <i class="fab fa-discord mr-2"></i> Login with Discord
+            </a>
+          <% } %>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <div class="sm:hidden flex items-center">
+          <button type="button" class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-discord">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="sm:hidden hidden mobile-menu px-4 pt-2 pb-3 space-y-2">
+      <a href="/" class="button-box button-box-small block text-center">Home</a>
+      <% if (locals.isAuthenticated) { %>
+        <a href="/dashboard" class="button-box button-box-small block text-center">Dashboard</a>
+        <% if (locals.isStaff) { %>
+          <a href="/staff/dashboard" class="button-box button-box-small block text-center">Staff Panel</a>
+        <% } %>
+        <% if (locals.isAdmin) { %>
+          <a href="/staff/admin-dashboard" class="button-box button-box-small block text-center">Admin Panel</a>
+        <% } %>
+        <a href="/auth/logout" class="button-box button-box-small block text-center">Logout</a>
+        <button onclick="toggleDarkMode()" class="button-box button-box-small block w-full text-center">Toggle Dark Mode</button>
+      <% } else { %>
+        <a href="/auth/discord" class="button-box button-box-small block text-center">
+          <i class="fab fa-discord mr-2"></i> Login with Discord
+        </a>
+      <% } %>
+    </div>
+  </nav>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.querySelector(".mobile-menu-button");
+      const menu = document.querySelector(".mobile-menu");
+      if (btn && menu) {
+        btn.addEventListener("click", () => {
+          menu.classList.toggle("hidden");
+        });
+      }
+    });
+  </script>
+</body>
+</html>

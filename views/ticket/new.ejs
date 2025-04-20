@@ -1,0 +1,138 @@
+<div class="min-h-screen bg-gray-50 py-6">
+    <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900">Create New Ticket</h2>
+                    <p class="mt-1 text-sm text-gray-600">
+                        Please provide detailed information about your issue to help us assist you better.
+                    </p>
+                </div>
+
+                <form action="/ticket/new" method="POST" class="space-y-6">
+                    <!-- Title -->
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-700">
+                            Title
+                        </label>
+                        <div class="mt-1">
+                            <input type="text" name="title" id="title" required
+                                class="shadow-sm focus:ring-discord focus:border-discord block w-full sm:text-sm border-gray-300 rounded-md p-3 hover:shadow-md transition duration-200"
+                                placeholder="Enter a brief title for your issue">
+                        </div>
+                        <p class="mt-2 text-sm text-gray-500">
+                            Keep the title concise and descriptive (e.g., "Unable to log in").
+                        </p>
+                    </div>
+
+                    <!-- Category -->
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-gray-700">
+                            Category
+                        </label>
+                        <div class="mt-1 relative">
+                            <select name="category" id="category" required
+                                class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-discord focus:border-discord sm:text-sm rounded-md">
+                                <option value="" disabled selected>Select a category</option>
+                                <option value="technical">Technical Issue</option>
+                                <option value="billing">Billing Question</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="feature-request">Feature Request</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Priority -->
+                    <div>
+                        <label for="priority" class="block text-sm font-medium text-gray-700">
+                            Priority
+                        </label>
+                        <div class="mt-2 flex items-center space-x-4">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="priority" value="low" class="hidden">
+                                <span class="px-4 py-2 rounded-md bg-green-100 text-green-800 cursor-pointer hover:bg-green-200">
+                                    Low
+                                </span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="priority" value="medium" class="hidden" checked>
+                                <span class="px-4 py-2 rounded-md bg-yellow-100 text-yellow-800 cursor-pointer hover:bg-yellow-200">
+                                    Medium
+                                </span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="priority" value="high" class="hidden">
+                                <span class="px-4 py-2 rounded-md bg-red-100 text-red-800 cursor-pointer hover:bg-red-200">
+                                    High
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700">
+                            Description
+                        </label>
+                        <div class="mt-1">
+                            <textarea name="description" id="description" rows="5" required
+                                class="shadow-sm focus:ring-discord focus:border-discord block w-full sm:text-sm border-gray-300 rounded-md p-3 hover:shadow-md transition duration-200"
+                                placeholder="Provide a detailed description of your issue..."></textarea>
+                        </div>
+                        <p class="mt-2 text-sm text-gray-500">
+                            Include as much detail as possible, such as steps to reproduce the issue, error messages, or screenshots.
+                        </p>
+                    </div>
+
+                    <!-- Server -->
+                    <div class="mt-4">
+                        <label for="serverId" class="block text-sm font-medium text-gray-700">Select Server</label>
+                        <select name="serverId" id="serverId" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-discord focus:ring-discord sm:text-sm">
+                            <% servers.forEach(server => { %>
+                                <option value="<%= server._id %>"><%= server.name %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <!-- Attachment -->
+                    <div>
+                        <label for="attachment" class="block text-sm font-medium text-gray-700">Attachment</label>
+                        <div class="mt-1 flex items-center">
+                            <input type="file" name="attachment" id="attachment"
+                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-gray-300 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100">
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="pt-5">
+                        <div class="flex justify-end">
+                            <a href="/dashboard"
+                                class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-discord">
+                                Cancel
+                            </a>
+                            <button type="submit"
+                                class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-discord hover:bg-discord-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-discord">
+                                Create Ticket
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Client-side validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const title = document.getElementById('title').value.trim();
+        const description = document.getElementById('description').value.trim();
+        const category = document.getElementById('category').value;
+
+        if (!title || !description || !category) {
+            e.preventDefault();
+            alert('Please fill in all required fields');
+        }
+    });
+</script>

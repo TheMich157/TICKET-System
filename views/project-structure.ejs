@@ -1,0 +1,168 @@
+<div class="project-structure">
+  <h2>Project Structure</h2>
+  <ul class="file-tree" id="fileTree">
+    <li class="folder">📁 config
+      <ul>
+        <li class="file">📄 passport.js</li>
+      </ul>
+    </li>
+    <li class="folder">📁 uploads
+      <ul>
+      </ul>
+    </li>
+    <li class="folder">📁 middleware
+      <ul>
+        <li class="file">📄 auth.js</li>
+        <li class="file">📄 checkTicketCreation.js</li>
+        <li class="file">📄 errorHandler.js</li>
+        <li class="file">📄 logIp.js</li>
+      </ul>
+    </li>
+    <li class="folder">📁 models
+      <ul>
+        <li class="file">📄 ActionLog.js</li>
+        <li class="file">📄 Server.js</li>
+        <li class="file">📄 Settings.js</li>
+        <li class="file">📄 Ticket.js</li>
+        <li class="file">📄 User.js</li>
+      </ul>
+    </li>
+    <li class="folder">📁 public
+      <ul>
+        <li class="folder">📁 css
+          <ul>
+            <li class="file">📄 styles.css</li>
+          </ul>
+        </li>
+        <li class="folder">📁 images
+          <ul>
+            <li class="file">📄 ticket.png</li>
+          </ul>
+        </li>
+        <li class="folder">📁 js
+          <ul>
+            <li class="file">📄 main.js</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li class="folder">📁 routes
+      <ul>
+        <li class="file">📄 admin.js</li>
+        <li class="file">📄 auth.js</li>
+        <li class="file">📄 index.js</li>
+        <li class="file">📄 reports.js</li>
+        <li class="file">📄 staff.js</li>
+        <li class="file">📄 test.js</li>
+        <li class="file">📄 ticket.js</li>
+      </ul>
+    </li>
+    <li class="folder">📁 utils
+      <ul>
+        <li class="file">📄 emailService.js</li>
+        <li class="file">📄 populateServers.js</li>
+      </ul>
+    </li>
+    <li class="folder">📁 views
+      <ul>
+        <li class="folder">📁 auth
+          <ul>
+            <li class="file">📄 select_server.ejs</li>
+          </ul>
+        </li>
+        <li class="folder">📁 partials
+          <ul>
+            <li class="file">📄 footer.ejs</li>
+            <li class="file">📄 header.ejs</li>
+          </ul>
+        </li>
+        <li class="folder">📁 staff
+          <ul>
+            <li class="file">📄 _search_filters.ejs</li>
+            <li class="file">📄 admin_dashboard.ejs</li>
+            <li class="file">📄 analytics.ejs</li>
+            <li class="file">📄 assign_roles.ejs</li>
+            <li class="file">📄 audit_logs.ejs</li>
+            <li class="file">📄 ban.ejs</li>
+            <li class="file">📄 dashboard.ejs</li>
+            <li class="file">📄 export_csv.ejs</li>
+            <li class="file">📄 leaderboard.ejs</li>
+            <li class="file">📄 manage_servers.ejs</li>
+          </ul>
+        </li>
+        <li class="folder">📁 ticket
+          <ul>
+            <li class="file">📄 _comment_form.ejs</li>
+            <li class="file">📄 _update_ticket_form.ejs</li>
+            <li class="file">📄 detail.ejs</li>
+            <li class="file">📄 list.ejs</li>
+            <li class="file">📄 new.ejs</li>
+          </ul>
+        </li>
+        <li class="file">📄 dashboard.ejs</li>
+        <li class="file">📄 error.ejs</li>
+        <li class="file">📄 index.ejs</li>
+        <li class="file">📄 layout.ejs</li>
+        <li class="file">📄 privacy.ejs</li>
+        <li class="file">📄 project-structure.ejs</li>
+        <li class="file">📄 tos.ejs</li>
+      </ul>
+    </li>
+    <li class="file">📄 .env</li>
+    <li class="file">📄 README.md</li>
+    <li class="file">📄 discordBot.js</li>
+    <li class="file">📄 heartbeat.js</li>
+    <li class="file">📄 package.json</li>
+    <li class="file">📄 server.js</li>
+  </ul>
+</div>
+
+<style>
+.project-structure {
+  padding: 20px;
+  font-family: monospace;
+}
+
+.file-tree {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+.file-tree ul {
+  list-style-type: none;
+  padding-left: 30px;
+}
+
+.folder {
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.file {
+  margin: 5px 0;
+  color: #666;
+}
+
+.empty-folder {
+  color: #999;
+  font-style: italic;
+  margin-left: 30px;
+  font-size: 0.9em;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const folders = document.querySelectorAll('.folder');
+  folders.forEach(folder => {
+    const ul = folder.querySelector('ul');
+    if (ul && !ul.children.length) {
+      ul.remove();
+      const emptyMsg = document.createElement('span');
+      emptyMsg.className = 'empty-folder';
+      emptyMsg.textContent = '(empty)';
+      folder.appendChild(emptyMsg);
+    }
+  });
+});
+</script>

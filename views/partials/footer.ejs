@@ -1,0 +1,40 @@
+<footer class="bg-white border-t mt-auto">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <div class="text-gray-500 text-sm">
+                    © <%= new Date().getFullYear() %> Support Ticket System. All rights reserved.
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-button').addEventListener('click', function() {
+            document.querySelector('.mobile-menu').classList.toggle('hidden');
+        });
+
+        // Flash messages auto-hide
+        setTimeout(function() {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(function(message) {
+                message.style.opacity = '0';
+                setTimeout(function() {
+                    message.remove();
+                }, 300);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<div class="bg-white shadow rounded-lg mb-6 p-4">
+    <form action="/staff/dashboard" method="GET" class="space-y-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <!-- Search -->
+            <div>
+                <label for="search" class="block text-sm font-medium text-gray-700">Search</label>
+                <input type="text" name="search" id="search" value="<%= query?.search || '' %>"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-discord focus:ring-discord sm:text-sm"
+                    placeholder="Search tickets...">
+            </div>
+
+            <!-- Status Filter -->
+            <div>
+                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                <select name="status" id="status"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-discord focus:ring-discord sm:text-sm">
+                    <option value="">All Statuses</option>
+                    <option value="open" <%= query?.status === 'open' ? 'selected' : '' %>>Open</option>
+                    <option value="in-progress" <%= query?.status === 'in-progress' ? 'selected' : '' %>>In Progress</option>
+                    <option value="closed" <%= query?.status === 'closed' ? 'selected' : '' %>>Closed</option>
+                </select>
+            </div>
+
+            <!-- Priority Filter -->
+            <div>
+                <label for="priority" class="block text-sm font-medium text-gray-700">Priority</label>
+                <select name="priority" id="priority"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-discord focus:ring-discord sm:text-sm">
+                    <option value="">All Priorities</option>
+                    <option value="high" <%= query?.priority === 'high' ? 'selected' : '' %>>High</option>
+                    <option value="medium" <%= query?.priority === 'medium' ? 'selected' : '' %>>Medium</option>
+                    <option value="low" <%= query?.priority === 'low' ? 'selected' : '' %>>Low</option>
+                </select>
+            </div>
+
+            <!-- Category Filter -->
+            <div>
+                <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                <select name="category" id="category"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-discord focus:ring-discord sm:text-sm">
+                    <option value="">All Categories</option>
+                    <option value="technical" <%= query?.category === 'technical' ? 'selected' : '' %>>Technical</option>
+                    <option value="billing" <%= query?.category === 'billing' ? 'selected' : '' %>>Billing</option>
+                    <option value="general" <%= query?.category === 'general' ? 'selected' : '' %>>General</option>
+                    <option value="feature-request" <%= query?.category === 'feature-request' ? 'selected' : '' %>>Feature Request</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex justify-end space-x-3">
+            <a href="/staff/dashboard" 
+                class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-discord">
+                Clear Filters
+            </a>
+            <button type="submit"
+                class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-discord hover:bg-discord-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-discord">
+                Apply Filters
+            </button>
+        </div>
+    </form>
+</div>
