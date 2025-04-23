@@ -11,11 +11,11 @@ async function sendHeartbeat() {
     }
 }
 
-// Export a function that starts the heartbeat interval
-function startHeartbeat(interval = 1 * 60 * 1000) { // Runs every 1 minute by default
+
+function startHeartbeat(interval = 1 * 60 * 1000) { 
     console.log(`Starting heartbeat service with interval: ${interval / 1000} seconds`);
 
-    sendHeartbeat(); // Send one immediately on startup
+    sendHeartbeat(); 
 
     setInterval(sendHeartbeat, interval);
     console.log('Heartbeat service started');

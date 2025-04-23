@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const Ticket = require('./models/Ticket');
 const User = require('./models/User');
-const ActionLog = require('./models/ActionLog'); // Import ActionLog model
-const Settings = require('./models/Settings'); // Import Settings model
+const ActionLog = require('./models/ActionLog');
+const Settings = require('./models/Settings'); 
 const { sendEmail, emailTemplates } = require('./utils/emailService');
 const { Parser } = require('json2csv');
 const Server = require('./models/Server');
@@ -20,7 +20,7 @@ const commands = [
         options: [
             {
                 name: 'user',
-                type: 6, // USER type
+                type: 6, 
                 description: 'The user to ban',
                 required: true
             }
@@ -32,7 +32,7 @@ const commands = [
         options: [
             {
                 name: 'user',
-                type: 6, // USER type
+                type: 6, 
                 description: 'The user to unban',
                 required: true
             }
@@ -44,13 +44,13 @@ const commands = [
         options: [
             {
                 name: 'ticket_id',
-                type: 3, // STRING type
+                type: 3, 
                 description: 'The ID of the ticket to assign',
                 required: true
             },
             {
                 name: 'staff_id',
-                type: 6, // USER type
+                type: 6, 
                 description: 'The staff member to assign the ticket to',
                 required: true
             }
@@ -62,7 +62,7 @@ const commands = [
         options: [
             {
                 name: 'ticket_id',
-                type: 3, // STRING type
+                type: 3,
                 description: 'The ID of the ticket to close',
                 required: true
             }
@@ -74,19 +74,19 @@ const commands = [
         options: [
             {
                 name: 'to',
-                type: 3, // STRING type
+                type: 3, 
                 description: 'Recipient email address',
                 required: true
             },
             {
                 name: 'subject',
-                type: 3, // STRING type
+                type: 3, 
                 description: 'Email subject',
                 required: true
             },
             {
                 name: 'content',
-                type: 3, // STRING type
+                type: 3,
                 description: 'Email content',
                 required: true
             }
@@ -103,7 +103,7 @@ const commands = [
         options: [
             {
                 name: 'ticket_id',
-                type: 3, // STRING type
+                type: 3, 
                 description: 'The ID of the ticket',
                 required: true
             }
@@ -120,7 +120,7 @@ const commands = [
         options: [
             {
                 name: 'allow',
-                type: 5, // BOOLEAN type
+                type: 5, 
                 description: 'Allow ticket creation',
                 required: true
             }
@@ -132,13 +132,13 @@ const commands = [
         options: [
             {
                 name: 'user',
-                type: 6, // USER type
+                type: 6,
                 description: 'The user to assign the role to',
                 required: true
             },
             {
                 name: 'role',
-                type: 3, // STRING type
+                type: 3, 
                 description: 'The role to assign',
                 required: true
             }
@@ -155,13 +155,13 @@ const commands = [
         options: [
             {
                 name: 'server-id',
-                type: 3, // STRING type
+                type: 3, 
                 description: 'The ID of the server',
                 required: true
             },
             {
                 name: 'name',
-                type: 3, // STRING type
+                type: 3, 
                 description: 'The name of the server',
                 required: true
             }
@@ -208,7 +208,6 @@ const startBot = async () => {
     try {
         console.log('Discord bot is starting...');
         
-        // Register slash commands
         const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_BOT_TOKEN);
         console.log('Refreshing application (/) commands...');
         await rest.put(
@@ -217,11 +216,10 @@ const startBot = async () => {
         );
         console.log('Successfully reloaded application (/) commands.');
 
-        // Login to Discord
         await client.login(process.env.DISCORD_BOT_TOKEN);
         console.log(`Logged in as ${client.user.tag}`);
 
-        // MongoDB change streams for tickets and users
+
         Ticket.watch().on('change', async (change) => {
             if (change.operationType === 'insert') {
                 const newTicket = change.fullDocument;
@@ -231,7 +229,6 @@ const startBot = async () => {
                     channel.send(`🎫 A new ticket has been created!\n**Title:** ${newTicket.title}\n**Category:** ${newTicket.category}\n**Priority:** ${newTicket.priority}`);
                 }
 
-                // Notify admins if high priority
                 if (newTicket.priority === 'high') {
                     const adminChannel = client.channels.cache.get(process.env.DISCORD_ADMIN_CHANNEL_ID);
                     if (adminChannel) {
@@ -243,9 +240,8 @@ const startBot = async () => {
 
         User.watch().on('change', async (change) => {
             try {
-                // Check if the change is an update and has updatedFields
                 if (change.operationType === 'update' && change.updateDescription?.updatedFields) {
-                    // Handle role updates
+    
                     if (change.updateDescription.updatedFields.roles) {
                         const updatedUser = await User.findById(change.documentKey._id);
                         const adminChannel = client.channels.cache.get(process.env.DISCORD_ADMIN_CHANNEL_ID);
@@ -255,7 +251,6 @@ const startBot = async () => {
                         }
                     }
 
-                    // Handle last login updates
                     if (change.updateDescription.updatedFields.lastLogin) {
                         const updatedUser = await User.findById(change.documentKey._id);
                         const channel = client.channels.cache.get(process.env.DISCORD_ADMIN_CHANNEL_ID);
@@ -274,7 +269,6 @@ const startBot = async () => {
             }
         });
 
-        // Handle slash commands
         client.on('interactionCreate', async (interaction) => {
             if (!interaction.isCommand()) return;
 
@@ -512,7 +506,7 @@ const startBot = async () => {
             if (commandName === 'add-server') {
                 const serverId = options.getString('server-id');
                 const name = options.getString('name');
-                const ownerId = interaction.user.id; // Use the command issuer's ID as the ownerId
+                const ownerId = interaction.user.id; 
 
                 const existingServer = await Server.findOne({ serverId });
                 if (existingServer) {
@@ -544,7 +538,7 @@ const startBot = async () => {
                     const response = await axios.get('https://status.aigenres.xyz/api/v1/status');
                     const status = response.data;
 
-                    // Adjusted to handle the actual response format
+              
                     const statusMessage = `📊 **Current System Status:**\n\n` +
                         `**System Name:** Support Ticket System\n` +
                         `**Status:** ${status.includes('Degraded') ? 'Degraded' : 'Operational'}\n` +
@@ -552,31 +546,30 @@ const startBot = async () => {
 
                     await interaction.reply({
                         content: statusMessage,
-                        flags: 64 // Use flags for ephemeral messages
+                        flags: 64
                     });
                 } catch (error) {
                     console.error('Error fetching system status:', error);
                     await interaction.reply({
                         content: '❌ Failed to fetch system status. Please try again later.',
-                        flags: 64 // Use flags for ephemeral messages
+                        flags: 64
                     });
                 }
             }
         });
 
-        // Add bot commands for managing tickets, roles, and servers
         client.on('messageCreate', async (message) => {
             if (message.content.startsWith('!assign-role')) {
                 const [command, userId, role] = message.content.split(' ');
                 if (!userId || !role) {
                     return message.reply('Usage: !assign-role <userId> <role>');
                 }
-                // Logic to assign role
+         
                 message.reply(`Assigned role ${role} to user ${userId}`);
             }
 
             if (message.content.startsWith('!export-tickets')) {
-                // Logic to export tickets
+     
                 message.reply('Tickets exported successfully.');
             }
 
@@ -585,7 +578,7 @@ const startBot = async () => {
                 if (!serverId || !name) {
                     return message.reply('Usage: !add-server <serverId> <name>');
                 }
-                // Logic to add server
+       
                 message.reply(`Server ${name} added successfully.`);
             }
         });
@@ -598,13 +591,10 @@ const startBot = async () => {
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
     updateBotStatus();
-    setInterval(updateBotStatus, 60000); // Update status every 60 seconds
+    setInterval(updateBotStatus, 60000); 
 });
 
-// Add logging to verify bot initialization and channel creation
-client.once('ready', () => {
-  console.log(`Bot is logged in as ${client.user.tag}`);
-});
+
 
 async function createTicketChannel(ticketId, ticketCreator, staffMember) {
   try {
@@ -624,7 +614,7 @@ async function createTicketChannel(ticketId, ticketCreator, staffMember) {
 
     const channel = await guild.channels.create(channelName, {
       type: 'GUILD_TEXT',
-      parent: process.env.DISCORD_TICKETS_CATEGORY_ID, // Ensure the category ID is set in .env
+      parent: process.env.DISCORD_TICKETS_CATEGORY_ID, 
       permissionOverwrites: [
         {
           id: guild.roles.everyone.id,
@@ -654,7 +644,19 @@ async function createTicketChannel(ticketId, ticketCreator, staffMember) {
   }
 }
 
-// Export the function
+client.on('messageCreate', async (message) => {
+  if (message.channel.parentId === process.env.DISCORD_TICKETS_CATEGORY_ID) {
+
+    const ticket = await Ticket.findOne({ channelId: message.channel.id });
+    if (ticket) {
+
+      console.log(`Message in ticket channel: ${message.content}`);
+    }
+  }
+});
+
+
+
 module.exports = {
   createTicketChannel,
   startBot: () => {

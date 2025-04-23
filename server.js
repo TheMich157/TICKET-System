@@ -22,15 +22,14 @@ const { sendEmail, emailTemplates } = require('./utils/emailService');
 
 const app = express();
 
-// Apply rate limiting to all routes with improved configuration
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per windowMs
+    windowMs: 15 * 60 * 1000,
+    max: 100,
     message: 'Too many requests from this IP, please try again later.',
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    skipSuccessfulRequests: false, // Count successful requests against the rate limit
-    skipFailedRequests: false, // Count failed requests against the rate limit
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: false,
+    skipFailedRequests: false,
     handler: (req, res) => {
         res.status(429).render('error', {
             message: 'Too many requests, please try again later.',
@@ -41,65 +40,61 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-// Connect to MongoDB with improved retry logic and error handling
 const connectDB = async () => {
-  const maxRetries = 5;
-  let retryCount = 0;
+    const maxRetries = 5;
+    let retryCount = 0;
 
-  const connect = async () => {
-    try {
-      await mongoose.connect(process.env.MONGODB_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        serverSelectionTimeoutMS: 10000,
-        socketTimeoutMS: 45000,
-        heartbeatFrequencyMS: 2000,
-        maxPoolSize: 50,
-        minPoolSize: 10,
-        retryWrites: true,
-        w: 'majority'
-      });
-      console.log('Connected to MongoDB successfully');
-    } catch (err) {
-      console.error(`MongoDB connection error (Attempt ${retryCount + 1}/${maxRetries}):`, err);
-      if (retryCount < maxRetries) {
-        retryCount++;
-        console.log(`Retrying connection in 5 seconds... (Attempt ${retryCount}/${maxRetries})`);
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        return connect();
-      } else {
-        console.error('Max retry attempts reached. Could not connect to MongoDB.');
-        process.exit(1);
-      }
-    }
-  };
+    const connect = async () => {
+        try {
+            await mongoose.connect(process.env.MONGODB_URI, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                serverSelectionTimeoutMS: 10000,
+                socketTimeoutMS: 45000,
+                heartbeatFrequencyMS: 2000,
+                maxPoolSize: 50,
+                minPoolSize: 10,
+                retryWrites: true,
+                w: 'majority'
+            });
+            console.log('Connected to MongoDB successfully');
+        } catch (err) {
+            console.error(`MongoDB connection error (Attempt ${retryCount + 1}/${maxRetries}):`, err);
+            if (retryCount < maxRetries) {
+                retryCount++;
+                console.log(`Retrying connection in 5 seconds... (Attempt ${retryCount}/${maxRetries})`);
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                return connect();
+            } else {
+                console.error('Max retry attempts reached. Could not connect to MongoDB.');
+                process.exit(1);
+            }
+        }
+    };
 
-  await connect();
+    await connect();
 };
 
 connectDB();
 
 app.use((req, res, next) => {
-  console.log(`Request received: ${req.method} ${req.url}`);
-  next();
+    console.log(`${req.method} ${req.url}`); // Simpler format without brackets
+    next();
 });
 
-// Handle MongoDB connection events
 mongoose.connection.on('disconnected', () => {
-  console.log('MongoDB disconnected! Attempting to reconnect...');
-  setTimeout(connectDB, 5000);
+    console.log('MongoDB disconnected! Attempting to reconnect...');
+    setTimeout(connectDB, 5000);
 });
 
 mongoose.connection.on('error', (err) => {
-  console.error('MongoDB error:', err);
+    console.error('MongoDB error:', err);
 });
 
-// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Session configuration with enhanced security
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -107,44 +102,38 @@ app.use(session({
   store: MongoStore.create({
     mongoUrl: process.env.MONGODB_URI,
     collectionName: 'sessions',
-    ttl: 24 * 60 * 60, // 1 day in seconds
+    ttl: 24 * 60 * 60,
     autoRemove: 'native',
-    touchAfter: 24 * 3600 // Only update session once per 24 hours
+    touchAfter: 24 * 3600
   }),
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24, // 1 day
+    maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax'
   },
-  name: 'sessionId', // Change session cookie name from default 'connect.sid'
-  rolling: true // Extend session on activity
+  name: 'sessionId',
+  rolling: true
 }));
 
-// Initialize Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Apply logIp middleware after Passport
 const logIp = require('./middleware/logIp');
 app.use(logIp);
 
-// Apply authentication middleware
 const authMiddleware = require('./middleware/auth');
 app.use(authMiddleware.router);
 
-// View engine setup
 app.use(expressLayouts);
 app.set('layout', 'layout');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.engine('ejs', require('ejs').__express);
 
-// Configure EJS options
 app.locals.async = true;
 app.locals.rmWhitespace = true;
 
-// Make user data available to all views
 app.use((req, res, next) => {
   res.locals.user = req.user;
   res.locals.isAuthenticated = req.isAuthenticated();
@@ -153,7 +142,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Check if user has Staff role
 const isStaff = (req, res, next) => {
     if (req.isAuthenticated() && (req.user.roles.includes('Staff') || req.user.roles.includes('Admin'))) {
         return next();
@@ -163,36 +151,28 @@ const isStaff = (req, res, next) => {
     });
 };
 
-// Initialize Passport config
-require('./config/passport'); // Ensure this line is present
+require('./config/passport');
 
-// Routes
 app.use('/', require('./routes/index'));
 app.use('/auth', require('./routes/auth'));
 app.use('/ticket', require('./routes/ticket'));
 app.use('/staff', require('./routes/staff'));
 
-// Register admin routes
 app.use('/admin', require('./routes/admin'));
 
-// After your routes setup
 app.use(require('./middleware/errorHandler'));
 
-// Configure better error handling for async routes
 const wrapAsync = fn => {
   return function(req, res, next) {
     fn(req, res, next).catch(next);
   };
 };
 
-// Update ticket routes to use wrapAsync
 app.use('/ticket', wrapAsync(require('./routes/ticket')));
 
-// Error handler middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   
-  // Handle specific errors
   if (err.name === 'ValidationError') {
     return res.status(400).render('error', { 
       message: 'Validation error', 
@@ -207,22 +187,19 @@ app.use((err, req, res, next) => {
     });
   }
 
-  // Default error handler
   res.status(err.status || 500).render('error', { 
     message: 'Something went wrong!',
     error: process.env.NODE_ENV === 'development' ? err : {}
   });
 });
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).render('error', { 
-    error: {}, // Pass an empty error object
+    error: {},
     message: 'Page not found' 
   });
 });
 
-// SLA breach checker
 const checkSLABreaches = async () => {
     try {
         const overdueTickets = await Ticket.find({ status: { $ne: 'closed' }, slaDeadline: { $lt: new Date() } });
@@ -241,7 +218,6 @@ const checkSLABreaches = async () => {
     }
 };
 
-// Run every hour
 setInterval(checkSLABreaches, 60 * 60 * 1000);
 
 const server = http.createServer(app);
@@ -268,12 +244,9 @@ io.on('connection', (socket) => {
   });
 });
 
-// Emit ticket updates
 const emitTicketUpdate = (ticketId, update) => {
     io.emit(`ticket-update-${ticketId}`, update);
 };
-
-// Add WebSocket server for real-time chat
 
 const chatServer = http.createServer(app);
 const chatIo = new Server(chatServer, {
@@ -292,16 +265,44 @@ io.on('connection', (socket) => {
     });
 
     socket.on('sendMessage', async ({ ticketId, message, userId, username, role }) => {
-        // Broadcast the message to the ticket room
-        io.to(`ticket-${ticketId}`).emit('receiveMessage', { username, role, message });
-
-        // Award points to staff members for participation
-        if (role === 'Staff' || role === 'Admin') {
-            const User = require('./models/User');
-            const user = await User.findById(userId);
-            if (user) {
-                await user.addPoints('chatParticipation');
+        try {
+            // Validate input
+            if (!ticketId || !message || !userId || !username || !role) {
+                throw new Error('Missing required fields');
             }
+
+            // Emit message to room
+            io.to(`ticket-${ticketId}`).emit('receiveMessage', {
+                username,
+                role,
+                message,
+                timestamp: new Date()
+            });
+
+            // Award points for staff participation
+            if (role === 'Staff' || role === 'Admin') {
+                const user = await User.findById(userId);
+                if (user) {
+                    await user.addPoints(5); // Add specific point value
+                    console.log(`Awarded points to ${username} for chat participation`);
+                }
+            }
+
+            // Log message to database
+            await Ticket.findByIdAndUpdate(ticketId, {
+                $push: {
+                    messages: {
+                        sender: userId,
+                        content: message,
+                        role: role,
+                        createdAt: new Date()
+                    }
+                }
+            });
+
+        } catch (error) {
+            console.error('Error in sendMessage:', error);
+            socket.emit('messageError', { error: 'Failed to send message' });
         }
     });
 

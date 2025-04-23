@@ -4,25 +4,24 @@
         <div class="relative z-10 pb-8 bg-gray-50 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
             <main class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
                 <div class="sm:text-center lg:text-left">
-                  
                     <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
                         <span class="block">Welcome to the</span>
                         <span class="block text-discord">Support Ticket System</span>
                     </h1>
                     <p class="mt-3 text-base text-gray-600 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                        Get help quickly and efficiently with our Discord-integrated support ticket system. Track your issues, communicate with support staff, and get solutions faster.
+                        Get help quickly and efficiently with our Discord-integrated support ticket system.
                     </p>
                     <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                        <% if (!locals.isAuthenticated) { %>
+                        <% if (!isAuthenticated) { %>
                             <div class="rounded-md shadow">
                                 <a href="/auth/discord" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-discord hover:bg-discord-dark md:py-4 md:text-lg md:px-10">
-                                    Login with Discord
+                                    <i class="fab fa-discord mr-2"></i> Login with Discord
                                 </a>
                             </div>
                         <% } else { %>
                             <div class="rounded-md shadow">
                                 <a href="/dashboard" class="w-full flex items-center justify-center px-8 py-2 border border-transparent text-base font-medium rounded-md text-white bg-discord hover:bg-discord-dark md:py-4 md:text-lg md:px-10">
-                                    Go to Dashboard
+                                    <i class="fas fa-columns mr-2"></i> Go to Dashboard
                                 </a>
                             </div>
                         <% } %>
@@ -98,22 +97,22 @@
             <% if (!locals.isAuthenticated) { %>
                 <div class="inline-flex rounded-md shadow">
                     <a href="/auth/discord" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-discord-dark bg-white hover:bg-gray-50">
-                        Login with Discord
+                        <i class="fab fa-discord mr-2"></i> Login with Discord
                     </a>
                 </div>
             <% } else { %>
                 <div class="inline-flex rounded-md shadow">
                     <a href="/ticket/new" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-discord-dark bg-white hover:bg-gray-50">
-                        Create Ticket
+                        <i class="fas fa-plus-circle mr-2"></i> Create Ticket
                     </a>
                 </div>
             <% } %>
         </div>
         <div class="mt-6 flex space-x-4 justify-center items-center">
-            <a href="/tos" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-discord-dark bg-white hover:bg-gray-50">
+            <a href="/tos" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-discord hover:bg-discord-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-discord">
                 Terms of Service
             </a>
-            <a href="/privacy" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-discord-dark bg-white hover:bg-gray-50">
+            <a href="/privacy" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-discord hover:bg-discord-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-discord">
                 Privacy Policy
             </a>
         </div>

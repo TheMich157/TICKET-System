@@ -28,15 +28,31 @@ router.get('/discord/callback',
     failureRedirect: '/auth/login',
     failureFlash: true
   }),
-  (req, res) => {
-    // Update last login time
-    req.user.lastLogin = new Date();
-    req.user.save();
+  async (req, res) => {
+    try {
+      // Update last login time
+      if (req.user) {
+        req.user.lastLogin = new Date();
+        await req.user.save();
 
-    // Redirect to the stored returnTo URL or dashboard
-    const redirectTo = req.session.returnTo || '/dashboard';
-    delete req.session.returnTo;
-    res.redirect(redirectTo);
+        // Check if user needs to select a server
+        if (!req.session.selectedServer) {
+          return res.redirect('/auth/select-server');
+        }
+
+        // Redirect to the stored returnTo URL or dashboard
+        const redirectTo = req.session.returnTo || '/dashboard';
+        delete req.session.returnTo;
+        return res.redirect(redirectTo);
+      }
+
+      // If no user object, redirect to login
+      res.redirect('/auth/login');
+      
+    } catch (err) {
+      console.error('Auth callback error:', err);
+      res.redirect('/auth/login');
+    }
   }
 );
 
